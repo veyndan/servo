@@ -12,8 +12,6 @@ android {
 
     namespace = "org.servo.servoview"
 
-    ndkPath = getNdkDir()
-
     defaultConfig.versionCode = generatedVersionCode
     defaultConfig.versionName = "0.0.1" // TODO: Parse Servo"s TOML and add git SHA.
 
@@ -144,7 +142,7 @@ project.afterEvaluate {
         val ndkBuildTask = tasks.create<Exec>("ndkbuild" + compileTask.name) {
             val debug = compileTask.name.contains("Debug")
             commandLine(
-                getNdkDir() + "/ndk-build",
+                android.ndkDirectory.resolve("ndk-build").path,
                 "APP_BUILD_SCRIPT=../jni/Android.mk",
                 "NDK_APPLICATION_MK=../jni/Application.mk",
                 "NDK_LIBS_OUT=" + getJniLibsPath(debug, arch),

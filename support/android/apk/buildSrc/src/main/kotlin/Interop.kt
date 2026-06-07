@@ -51,28 +51,3 @@ fun getNDKAbi(arch: String): String {
         else -> throw GradleException("Invalid target architecture $arch")
     }
 }
-
-fun Project.getNdkDir(): String {
-    // Read environment variable used in rust build system
-    var ndkRoot = System.getenv("ANDROID_NDK_ROOT")
-    if (ndkRoot == null) {
-        // Fallback to ndkDir in local.properties
-        val rootDir = project.rootDir
-        val localProperties = File(rootDir, "local.properties")
-        val properties = Properties()
-        localProperties.inputStream().use { instr ->
-            properties.load(instr)
-        }
-
-        ndkRoot = properties.getProperty("ndk.dir")
-    }
-
-    val ndkDir = if (ndkRoot != null) File(ndkRoot) else null
-    if (ndkDir == null || !ndkDir.exists()) {
-        throw GradleException(
-            "Please set a valid ANDROID_NDK_ROOT environment variable " +
-                    "or ndk.dir path in local.properties file"
-        )
-    }
-    return ndkDir.absolutePath
-}
